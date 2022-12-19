@@ -1,3 +1,5 @@
+import TicketWithoutHotel from '../../../components/TicketWithoutHotel';
+
 export default function Hotel() {
-  return 'Hotel: Em breve!';
+  return <TicketWithoutHotel />;
 }
