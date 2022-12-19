@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import TicketWithoutHotel from '../../../components/TicketWithoutHotel';
 import useTickets from '../../../hooks/api/useTickets';
+import PendingPayment from '../../../components/Pending Payment/PendingPayment';
 
 export default function Hotel() {
   const [userTicket, setUserTicket] = useState(null);
@@ -14,5 +15,9 @@ export default function Hotel() {
     });
   }, []);
 
-  return !userTicket || userTicket.includesHotel === false ? <TicketWithoutHotel /> : '';
+  if (userTicket === null) return <TicketWithoutHotel />;
+  if (userTicket.ticketType.includesHotel === false) return <TicketWithoutHotel />;
+  if (userTicket.status === 'PAID') return '';
+
+  return <PendingPayment />;
 }
