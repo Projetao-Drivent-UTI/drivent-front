@@ -43,17 +43,17 @@ const TypesTicket = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  button{
+  button {
     width: 145px;
     height: 145px;
-    border: 1px solid #CECECE;
+    border: 1px solid #cecece;
     border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     margin-right: 25px;
-    h5{
+    h5 {
       width: 80px;
       font-family: 'Roboto';
       font-weight: 400;
@@ -61,7 +61,7 @@ const TypesTicket = styled.div`
       text-align: center;
       color: #454545;
     }
-    h6{
+    h6 {
       font-family: 'Roboto';
       font-weight: 400;
       font-size: 14px;
