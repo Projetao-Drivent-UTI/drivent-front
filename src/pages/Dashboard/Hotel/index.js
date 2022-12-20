@@ -19,17 +19,14 @@ export default function Hotel() {
   }, []);
 
   if (userTicket === null) {
-    console.log('null');
     return <TicketWithoutHotel />;
   }
 
   if (!userTicket.TicketType.includesHotel) {
-    console.log('includes');
     return <TicketWithoutHotel />;
   }
 
   if (userTicket.status === 'PAID') {
-    console.log('paid');
     return <Hotels />;
   }
 
