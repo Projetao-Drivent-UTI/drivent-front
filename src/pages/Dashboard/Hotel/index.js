@@ -1,3 +1,6 @@
+import TicketWithoutHotel from '../../../components/TicketWithoutHotel';
+import useTickets from '../../../hooks/api/useTickets';
+import PendingPayment from '../../../components/Pending Payment/PendingPayment';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Button from '../../../components/Form/Button';
@@ -11,11 +14,16 @@ export default function Hotel() {
   const { hotel, getAHotelById } = useGetHotelById();
   const [hotels, setHotels] = useState();
   const [rooms, setRooms] = useState();
+  const [userTicket, setUserTicket] = useState(null);
+  const { getTicket, ticket } = useTickets();
+  
+  useEffect(() => {
+    const ticket = getTicket();
 
-  async function getBooking() {
-    await getAHotelById(1);
-    setRooms(true);
-  }  
+    ticket.then((response) => {
+      setUserTicket(response);
+    });
+  }, []);
   useEffect(async() => {
     if(hotel) {
       setHotels(hotel.Rooms);
@@ -35,6 +43,16 @@ export default function Hotel() {
       toast('Não foi possível fazer sua reserva');
     }
   }
+  async function getBooking() {
+    await getAHotelById(1);
+    setRooms(true);
+  }  
+
+  if (userTicket === null) return <TicketWithoutHotel />;
+  if (userTicket.TicketType.includesHotel === false) return <TicketWithoutHotel />;
+  //if (userTicket.status === 'PAID') return '';
+
+  //return <PendingPayment />;
   return (
     <>
       <Button onClick ={getBooking}>click fake no hotel</Button> {/* substitui pelo click real */}
