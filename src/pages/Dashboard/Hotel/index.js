@@ -1,23 +1,37 @@
 import { useEffect, useState } from 'react';
 import TicketWithoutHotel from '../../../components/TicketWithoutHotel';
 import useTickets from '../../../hooks/api/useTickets';
-import PendingPayment from '../../../components/Pending Payment/PendingPayment';
+import PendingPayment from '../../../components/PendingPayment/index';
+import Hotels from '../../../components/Hotels';
 
 export default function Hotel() {
   const [userTicket, setUserTicket] = useState(null);
-  const { getTicket } = useTickets();
+  const { getTicket, ticketsLoading } = useTickets();
 
   useEffect(() => {
-    const ticket = getTicket();
+    if (ticketsLoading) {
+      const ticket = getTicket();
 
-    ticket.then((response) => {
-      setUserTicket(response.data);
-    });
+      ticket.then((response) => {
+        setUserTicket(response);
+      });
+    }
   }, []);
 
-  if (userTicket === null) return <TicketWithoutHotel />;
-  if (userTicket.ticketType.includesHotel === false) return <TicketWithoutHotel />;
-  if (userTicket.status === 'PAID') return '';
+  if (userTicket === null) {
+    console.log('null');
+    return <TicketWithoutHotel />;
+  }
+
+  if (!userTicket.TicketType.includesHotel) {
+    console.log('includes');
+    return <TicketWithoutHotel />;
+  }
+
+  if (userTicket.status === 'PAID') {
+    console.log('paid');
+    return <Hotels />;
+  }
 
   return <PendingPayment />;
 }
