@@ -5,7 +5,6 @@ import {
 } from 'react-icons/bs';
 
 export default function RoomDisplay({ id, capacity, booking, onClick, isActive }) {
-  console.log(isActive);
   let disabledRoom = false;
   if(booking.length >= capacity) {
     disabledRoom = true;
