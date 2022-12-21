@@ -29,11 +29,11 @@ export default function Hotels() {
   );
 }
 
-const PageTitle = styled.span`
+export const PageTitle = styled.span`
   font-size: 34px;
 `;
 
-const PageSubTitle = styled.span`
+export const PageSubTitle = styled.span`
   font-size: 20px;
   color: #8e8e8e;
   margin-top: 36px;
