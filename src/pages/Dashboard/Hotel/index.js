@@ -1,6 +1,6 @@
 import TicketWithoutHotel from '../../../components/TicketWithoutHotel';
 import useTickets from '../../../hooks/api/useTickets';
-import PendingPayment from '../../../components/Pending Payment/PendingPayment';
+import PendingPayment from '../../../components/PendingPayment/index';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Button from '../../../components/Form/Button';
@@ -8,6 +8,8 @@ import RoomDisplay from '../../../components/RoomDisplay';
 import useNewBooking from '../../../hooks/api/useNewBooking';
 import { toast } from 'react-toastify';
 import useGetHotelById from '../../../hooks/api/useHotelById';
+import Hotels, { PageSubTitle } from '../../../components/Hotels';
+
 export default function Hotel() {
   const [activeIndex, setActiveIndex] = useState();
   const { newBooking } = useNewBooking();
@@ -15,14 +17,16 @@ export default function Hotel() {
   const [hotels, setHotels] = useState();
   const [rooms, setRooms] = useState();
   const [userTicket, setUserTicket] = useState(null);
-  const { getTicket, ticket } = useTickets();
-  
-  useEffect(() => {
-    const ticket = getTicket();
+  const { getTicket, ticketsLoading } = useTickets();
 
-    ticket.then((response) => {
-      setUserTicket(response);
-    });
+  useEffect(() => {
+    if (ticketsLoading) {
+      const ticket = getTicket();
+
+      ticket.then((response) => {
+        setUserTicket(response);
+      });
+    }
   }, []);
   useEffect(async() => {
     if(hotel) {
@@ -48,26 +52,43 @@ export default function Hotel() {
     setRooms(true);
   }  
 
-  if (userTicket === null) return <TicketWithoutHotel />;
-  if (userTicket.TicketType.includesHotel === false) return <TicketWithoutHotel />;
-  //if (userTicket.status === 'PAID') return '';
+  if (userTicket === null) {
+    return <TicketWithoutHotel />;
+  }
 
-  //return <PendingPayment />;
-  return (
-    <>
-      <Button onClick ={getBooking}>click fake no hotel</Button> {/* substitui pelo click real */}
-      <RoomList>
-        {rooms?(hotels.map((room, key) =>
-          <RoomDisplay key={key} id={room.id} capacity={room.capacity} booking={room.Booking} onClick={() => setActiveIndex(room.id)}
-            isActive={activeIndex === room.id} ></RoomDisplay>
-        )):(<></>)}
-      </RoomList>
-      {activeIndex===undefined?(<></>):(<Button onClick ={postBooking}>RESERVAR QUARTO</Button>)}
-      
-    </>
-  );
+  if (!userTicket.TicketType.includesHotel) {
+    return <TicketWithoutHotel />;
+  }
+
+  if (userTicket.status === 'PAID') {
+    return (
+      <>
+        <Hotels />
+        <HotelWrapper> {/* remover tambem */}
+          <Button onClick ={getBooking}>click fake no hotel</Button> {/* substituir pelo click real */}
+        </HotelWrapper>
+        {rooms?( <PageSubTitle>Ótima pedida! Agora escolha seu quarto</PageSubTitle>):(<></>)}
+        <RoomList>
+          {rooms?(
+            hotels.map((room, key) =>
+              <RoomDisplay key={key} id={room.id} capacity={room.capacity} booking={room.Booking} onClick={() => setActiveIndex(room.id)}
+                isActive={activeIndex === room.id} ></RoomDisplay>
+            )):(<></>)
+          }
+        </RoomList>
+        {activeIndex===undefined?(<></>):(<Button onClick ={postBooking}>RESERVAR QUARTO</Button>)}
+      </>
+    );
+  }
 }
 const RoomList = styled.div`
   display: flex;
   flex-wrap: wrap;
+  margin-top:33px;
+  margin-bottom:49px;
+`;
+const HotelWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top:50px;
 `;
