@@ -7,27 +7,15 @@ import useTicketTypes from '../../hooks/api/useTicketTypes';
 import useSaveTicket from '../../hooks/api/useSaveTicket';
 
 export default function tickets() {
-  const [presential, setPresential] = useState('#fff');
   const [online, setOnline] = useState('#fff');
-  const [withoutHotel, setWithoutHotel] = useState('#fff');
+  const [presential, setPresential] = useState('#fff');
   const [withHotel, setWithHotel] = useState('#fff');
+  const [withoutHotel, setWithoutHotel] = useState('#fff');
   const [ticketTypeId, setTicketTypeId] = useState(0);
-  const [selectedType, setSelectedType] = useState({});
   const [total, setTotal] = useState(0);
   const { ticketTypes } = useTicketTypes();
   const { saveTicketLoading, saveTicket } = useSaveTicket();
   const navigate = useNavigate();
-
-  function selectedPresential(price, id) {
-    if (presential === '#fff') {
-      setPresential('#FFEED2');
-      setOnline('#fff');
-    } else {
-      setPresential('#fff');
-    }
-    setTotal(price);
-    setTicketTypeId(id);
-  }
 
   function selectedOnline(price, id) {
     if (online === '#fff') {
@@ -35,6 +23,17 @@ export default function tickets() {
       setPresential('#fff');
     } else {
       setOnline('#fff');
+    }
+    setTotal(price);
+    setTicketTypeId(id);
+  }
+
+  function selectedPresential(price, id) {
+    if (presential === '#fff') {
+      setPresential('#FFEED2');
+      setOnline('#fff');
+    } else {
+      setPresential('#fff');
     }
     setTotal(price);
     setTicketTypeId(id);
@@ -102,9 +101,9 @@ export default function tickets() {
       </TypesTicket>
       {online === '#FFEED2' ? (
         <>
-          <TotalOline>
+          <TotalTicket>
             Fechado! O total ficou em <strong>R$ {total}</strong>. Agora é só confirmar:
-          </TotalOline>
+          </TotalTicket>
           <ReservedButton onClick={() => sendMessage()} disabled={saveTicketLoading}>
             RESERVAR INGRESSO
           </ReservedButton>
@@ -117,17 +116,25 @@ export default function tickets() {
           <PresentialText>Ótimo! Agora escolha sua modalidade de hospedagem</PresentialText>
           <TypesTicket>
             {ticketTypes?.map((type) => {
-              if (type.name === 'comHotel') {
+              if (type.name === 'Com Hotel') {
                 return (
-                  <button onClick={() => selectedWithHotel(type.price, type.id)} selected={selectedWithHotel} key={type.id}>
+                  <button
+                    onClick={() => selectedWithHotel(type.price, type.id)}
+                    selected={selectedWithHotel}
+                    key={type.id}
+                  >
                     <h5>{type.name}</h5>
                     <h6>R$ {type.price}</h6>
                   </button>
                 );
               }
-              if (type.name === 'semHotel') {
+              if (type.name === 'Sem Hotel') {
                 return (
-                  <button onClick={() => selectedWithoutHotel(type.price, type.id)} selected={selectedWithoutHotel} key={type.id}>
+                  <button
+                    onClick={() => selectedWithoutHotel(type.price, type.id)}
+                    selected={selectedWithoutHotel}
+                    key={type.id}
+                  >
                     <h5>{type.name}</h5>
                     <h6>R$ {type.price}</h6>
                   </button>
@@ -135,6 +142,14 @@ export default function tickets() {
               }
             })}
           </TypesTicket>
+          <>
+            <TotalTicket>
+              Fechado! O total ficou em <strong>R$ {total}</strong>. Agora é só confirmar:
+            </TotalTicket>
+            <ReservedButton onClick={() => sendMessage()} disabled={saveTicketLoading}>
+              RESERVAR INGRESSO
+            </ReservedButton>
+          </>
         </>
       ) : (
         ''
@@ -201,7 +216,7 @@ const TypesTicket = styled.div`
   }
 `;
 
-const TotalOline = styled.div`
+const TotalTicket = styled.div`
   font-family: 'Roboto';
   font-weight: 400;
   font-size: 20px;
