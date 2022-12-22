@@ -6,14 +6,14 @@ export default function useTicket() {
   const token = useToken();
 
   const {
-    loading: savedTicketLoading,
-    error: savedTicketError,
-    act: savedTicket,
-  } = useAsync((data) => ticketApi.savedTicketType(data, token), false);
+    loading: saveTicketLoading,
+    error: saveTicketError,
+    act: saveTicket,
+  } = useAsync((data) => ticketApi.saveTicketType(data, token), false);
 
   return {
-    savedTicketLoading,
-    savedTicketError,
-    savedTicket,
+    saveTicketLoading,
+    saveTicketError,
+    saveTicket,
   };
 }
