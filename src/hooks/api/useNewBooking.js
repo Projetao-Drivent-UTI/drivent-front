@@ -10,7 +10,7 @@ export default function useNewBooking() {
     loading: newBookingLoading,
     error: newBookingError,
     act: newBooking
-  } = useAsync((data) => bookingApi.newBooking(data, token), false);
+  } = useAsync((body) => bookingApi.newBooking(body, token), false);
 
   return {
     newBookingLoading,
