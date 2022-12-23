@@ -16,7 +16,6 @@ export default function Payment() {
 
   const [render, setRender] = useState(false);
 
-
   useEffect(() => {
     if ( enrollment ) {
       setUserEnrollment(enrollment);
