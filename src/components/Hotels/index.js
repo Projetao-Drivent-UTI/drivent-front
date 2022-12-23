@@ -3,19 +3,19 @@ import Hotel from './Hotel';
 import styled from 'styled-components';
 import useHotels from '../../hooks/api/useHotels';
 
-export default function Hotels() {
+export default function Hotels(onClick) {
   const [hotelsList, setHotels] = useState([]);
   const { getHotels } = useHotels();
-
+  
   useEffect(() => {
     const promise = getHotels();
     promise.then((response) => {
       setHotels(response);
     });
   }, []);
-
+  
   const toBeRendered = hotelsList.map((hotel, index) => {
-    return <Hotel image={hotel.image} name={hotel.name} id={hotel.id} rooms={hotel.rooms} key={index} />;
+    return <Hotel image={hotel.image} name={hotel.name} id={hotel.id} rooms={hotel.Rooms} key={index} onClick={onClick}/>;
   });
 
   return (
@@ -44,8 +44,9 @@ const HotelsContainer = styled.div`
   width: 100%;
   height: 264px;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  overflow-x: scroll;
+  
 `;
 
 const Wrapper = styled.span`
