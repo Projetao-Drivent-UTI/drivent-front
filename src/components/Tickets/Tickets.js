@@ -8,22 +8,21 @@ import useSaveTicket from '../../hooks/api/useSaveTicket';
 import CardBox from './CardBox';
 import CardHotels from './CardHotels';
 
-export default function tickets() {
+export default function tickets( { render, setRender } ) {
   const [ticketTypeId, setTicketTypeId] = useState(0);
   const [total, setTotal] = useState(0);
   const [typeName, setTypeName] = useState('');
   const [hotelName, setHotelName] = useState('');
   const { ticketTypes } = useTicketTypes();
   const { saveTicketLoading, saveTicket } = useSaveTicket();
-  const navigate = useNavigate();
-
+  console.log(ticketTypes);
   async function sendMessage() {
     const body = { ticketTypeId };
 
     try {
       await saveTicket(body);
       toast('Informações salvas com sucesso!');
-      navigate('/');
+      setRender(!render);
     } catch (error) {
       toast('Não foi possível salvar suas informações!');
     }
