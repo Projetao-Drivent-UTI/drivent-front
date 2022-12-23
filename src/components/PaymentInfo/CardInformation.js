@@ -1,20 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import Payment from 'payment';
 import Card from 'react-credit-cards';
 import styled from 'styled-components';
 import 'react-credit-cards/es/styles-compiled.css';
 
-import { usePaymentProcess } from '../../hooks/api/usePayment';
+import usePaymentProcess  from '../../hooks/api/usePayment';
 
 import Typography from '@material-ui/core/Typography';
 
-export default function CardBox({ ticketId }) {
+export default function CardBox({ formData, setFormData }) {  
   class PaymentForm extends React.Component {
     state = {
       cvc: '',
       expiry: '',
       focus: '',
+      issuer: '',
       name: '',
       number: '',
+      setForm: false
     };
   
     handleInputFocus = (e) => {
@@ -23,20 +26,37 @@ export default function CardBox({ ticketId }) {
     
     handleInputChange = (e) => {
       const { name, value } = e.target;
-      
+      if (e.target.name === 'number') {
+        e.target.value = formatCreditCardNumber(e.target.value);
+      } else if (e.target.name === 'expiry') {
+        e.target.value = formatExpirationDate(e.target.value);
+      } else if (e.target.name === 'cvc') {
+        e.target.value = formatCVC(e.target.value);
+      }
       this.setState({ [name]: value });
     };
-  
+
+    handleCallback = ({ issuer }, isValid) => {
+      if (isValid) {
+        this.setState({ issuer });
+      }
+    };
+
     handleSubmit = e => {
       e.preventDefault();
-      const formData = this.state;
-      usePaymentProcess({
-        ticketId: ticketId,
-        cardData: formData
+      setFormData( {
+        cvc: this.state.cvc,
+        expiry: this.state.expiry,
+        issuer: this.state.issuer,
+        name: this.state.name,
+        number: this.state.number
       });
+      this.form.reset();
     };
   
     render() {
+      const { name, number, expiry, cvc, issuer, formData, setForm } = this.state;
+      console.log(issuer);
       return (
         <AppPayment>
           <Card
@@ -45,6 +65,7 @@ export default function CardBox({ ticketId }) {
             focused={this.state.focus}
             name={this.state.name}
             number={this.state.number}
+            callback={this.handleCallback}
           />
           <form ref={c => (this.form = c)}  onSubmit={this.handleSubmit}>
             <CardForm>
@@ -99,6 +120,7 @@ export default function CardBox({ ticketId }) {
                 </div>
               </Row>
             </CardForm>
+            <input type='hidden' name='issuer' value={issuer} />
             <FormActions>
               <button className='btn btn-primary btn-block'>FINALIZAR PAGAMENTO</button>
             </FormActions>
@@ -109,10 +131,72 @@ export default function CardBox({ ticketId }) {
   }
   return (
     <Box>
-      <PaymentForm  />
+      <PaymentForm  formData={formData} />
     </Box>
   );
 };
+
+function clearNumber(value = '') {
+  return value.replace(/\D+/g, '');
+}
+
+function formatCreditCardNumber(value) {
+  if (!value) {
+    return value;
+  }
+
+  const issuer = Payment.fns.cardType(value);
+  const clearValue = clearNumber(value);
+  let nextValue;
+
+  switch (issuer) {
+  case 'amex':
+    nextValue = `${clearValue.slice(0, 4)} ${clearValue.slice(
+      4,
+      10
+    )} ${clearValue.slice(10, 15)}`;
+    break;
+  case 'dinersclub':
+    nextValue = `${clearValue.slice(0, 4)} ${clearValue.slice(
+      4,
+      10
+    )} ${clearValue.slice(10, 14)}`;
+    break;
+  default:
+    nextValue = `${clearValue.slice(0, 4)} ${clearValue.slice(
+      4,
+      8
+    )} ${clearValue.slice(8, 12)} ${clearValue.slice(12, 19)}`;
+    break;
+  }
+
+  return nextValue.trim();
+}
+function formatCVC(value, prevValue, allValues = {}) {
+  const clearValue = clearNumber(value);
+  let maxLength = 4;
+
+  if (allValues.number) {
+    const issuer = Payment.fns.cardType(allValues.number);
+    maxLength = issuer === 'amex' ? 4 : 3;
+  }
+
+  return clearValue.slice(0, maxLength);
+}
+
+function formatExpirationDate(value) {
+  const clearValue = clearNumber(value);
+
+  if (clearValue.length >= 3) {
+    return `${clearValue.slice(0, 2)}/${clearValue.slice(2, 4)}`;
+  }
+
+  return clearValue;
+}
+
+function formatFormData(data) {
+  return Object.keys(data).map(d => `${d}: ${data[d]}`);
+}
 
 const AppPayment = styled.div`
     display: flex;
@@ -152,7 +236,7 @@ const Row = styled.div`
   }
 `;
 
-const CardForm = styled.form`
+const CardForm = styled.div`
   margin: auto auto auto 20px;
   max-width: 300px;
   display: flex;

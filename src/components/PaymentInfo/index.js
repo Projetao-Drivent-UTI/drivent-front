@@ -2,23 +2,27 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 
-import useUserTicket from '../../hooks/api/useTicket';
-
 import TicketBox from './TicketBox';
 import CardBox from './CardInformation';
 import PaymentConfirmed from './PaymentConfirmed';
-import NoEnrollment from './NoEnrollment';
 
-export default function PaymentInfo() {
-  const { ticket } = useUserTicket();
-  const [userTicket, setUserTicket] = useState({});
+import  usePaymentProcess  from '../../hooks/api/usePaymentProcess';
 
-  useEffect(() => {
-    if (ticket) {
-      setUserTicket(ticket);
-    } 
-  }, [ticket]);
-
+export default function PaymentInfo( { userTicket, render, setRender } ) {
+  const [formData, setFormData] = useState({});
+  useEffect(async() => {
+    try {
+      if (Object.keys(formData).length !== 0) {
+        console.log(formData, 'form');
+        usePaymentProcess({
+          ticketId: userTicket.id,
+          cardData: formData
+        });
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  }, [formData]);
   return (
     <>
       <StyledTypography variant="h6">Ingresso e pagamento</StyledTypography>
@@ -29,7 +33,7 @@ export default function PaymentInfo() {
           <StyledTypography variant='subtitle1' color='textSecondary'>Pagamento</StyledTypography>
           {
             userTicket.status === 'RESERVED'?
-              <CardBox ticketId = {userTicket.id}/>:
+              <CardBox ticketId = {userTicket.id} formData={formData} setFormData={setFormData} setRender={setRender} render={render}/>:
               <PaymentConfirmed />
           }
         </>
