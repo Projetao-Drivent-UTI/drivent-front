@@ -55,7 +55,7 @@ const Room = styled.div `
   background-color: white;
   margin-right: 17px;
   margin-bottom: 7px;
-  
+  cursor: pointer;
   ${props => { 
     if(props.disabledRoom === true) {
       return 'color:#9D9D9D; background-color: #CECECE;';
