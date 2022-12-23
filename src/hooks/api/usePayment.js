@@ -3,7 +3,7 @@ import useToken from '../useToken';
 
 import * as paymentApi from '../../services/paymentApi';
 
-export default function useTicketType() {
+export function useTicketType() {
   const token = useToken();
   const {
     data: paymentTicket,
@@ -17,5 +17,22 @@ export default function useTicketType() {
     paymentTicketLoading,
     paymentTicketError,
     getPaymentTicket
+  };
+};
+
+export function usePaymentProcess(body) {
+  const token = useToken();
+  const {
+    data: paymentProcess,
+    loading: paymentProcessLoading,
+    error: paymentProcessError,
+    act: getPaymentProcess
+  } = useAsync(() => paymentApi.paymentProcess(body, token));
+
+  return {
+    paymentProcess,
+    paymentProcessLoading,
+    paymentProcessError,
+    getPaymentProcess
   };
 };
