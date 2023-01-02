@@ -2,43 +2,42 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 
-import useUserTicket from '../../hooks/api/useTicket';
-
 import TicketBox from './TicketBox';
 import CardBox from './CardInformation';
+import PaymentConfirmed from './PaymentConfirmed';
 
-export default function PaymentInfo() {
-  const { ticket } = useUserTicket();
-  const [userTicket, setUserTicket] = useState({});
-  const testTicket ={
-    id: 1,
-    status: 'RESERVED',
-    ticketTypeId: 1,
-    enrollmentId: 1,
-    TicketType: {
-      id: 1,
-      name: 'hotel',
-      price: 300,
-      isRemote: false,
-      includesHotel: true,
+import  usePaymentProcess  from '../../hooks/api/usePaymentProcess';
+
+export default function PaymentInfo( { userTicket, render, setRender } ) {
+  const [formData, setFormData] = useState({});
+  useEffect(async() => {
+    try {
+      if (Object.keys(formData).length !== 0) {
+        console.log(formData, 'form');
+        usePaymentProcess({
+          ticketId: userTicket.id,
+          cardData: formData
+        });
+      };
+    } catch (error) {
+      console.log(error);
     }
-  };
-  console.log(ticket);
-
-  useEffect(() => {
-    setUserTicket(testTicket);
-    // if (ticket) {
-    // setUserTicket(ticket);
-    //} 
-  }, [ticket]);
-
+  }, [formData]);
   return (
     <>
       <StyledTypography variant="h6">Ingresso e pagamento</StyledTypography>
-      <StyledTypography variant='subtitle1' color='textSecondary'>Ingresso escolhido</StyledTypography>
-      {(Object.keys(userTicket).length !== 0)?<TicketBox userTicket={userTicket}/>:<></>}
-      <StyledTypography variant='subtitle1' color='textSecondary'>Pagamento</StyledTypography>
-      <CardBox />
+      {(Object.keys(userTicket).length !== 0)?
+        <>
+          <StyledTypography variant='subtitle1' color='textSecondary'>Ingresso escolhido</StyledTypography>
+          <TicketBox userTicket={userTicket}/>
+          <StyledTypography variant='subtitle1' color='textSecondary'>Pagamento</StyledTypography>
+          {
+            userTicket.status === 'RESERVED'?
+              <CardBox ticketId = {userTicket.id} formData={formData} setFormData={setFormData} setRender={setRender} render={render}/>:
+              <PaymentConfirmed />
+          }
+        </>
+        :<></>}
     </>
   );
 };
