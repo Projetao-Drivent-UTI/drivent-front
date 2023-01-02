@@ -45,7 +45,7 @@ const Container = styled.div`
   flex-direction: column;
   padding: 14px;
   cursor: pointer;
-  margin-bottom:38px;
+  margin-top: 20px;
 `;
 
 const Image = styled.div`

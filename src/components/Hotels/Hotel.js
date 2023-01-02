@@ -1,14 +1,14 @@
-import styled from 'styled-components';
+import styled from 'styled-components'; 
 import { H1, H2 } from './BookedRoom';
 
-export default function Hotel({ image, name, id, rooms }) {
-  function getVacancy(rooms) {
+export default function Hotel({ image, name, id, roomList, onClick, isActive }) {
+  function getVacancy(roomList) {
     let capacity=0;
     let booking=0;
     let answer=[];
     let roomTypes;
     
-    rooms.map((room) => {
+    roomList.map((room) => {
       capacity+=room.capacity;
       booking+=room.Booking.length;
       if (room.capacity===1 && !answer.includes('Single')) {
@@ -37,10 +37,10 @@ export default function Hotel({ image, name, id, rooms }) {
     return final;
   }
 
-  const hotelInfo = getVacancy(rooms);
-  
+  const hotelInfo = getVacancy(roomList);
+   
   return (
-    <Container >
+    <Container onClick={onClick} isActive={isActive}>
       <Image image={image} />
       <Name>{name}</Name>
       <H1>Tipos de acomodação:</H1>
@@ -54,13 +54,19 @@ const Container = styled.div`
   width: 196px;
   height: 264px;
   border-radius: 10px;
-  background-color: #ebebeb;
   margin-right: 20px;
   margin-bottom: 20px;
   display: flex;
   flex-direction: column;
   padding: 14px;
   cursor: pointer;
+  ${props => {
+    if(props.isActive===true) {
+      return 'background-color: #FFEED2;';
+    }else{
+      return 'background-color: #ebebeb;';
+    }
+  }}
 `;
 
 const Image = styled.div`

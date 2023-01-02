@@ -278,7 +278,7 @@ const StyledTypography = styled(Typography)`
   margin-bottom: 20px!important;
 `;
 
-const SubmitContainer = styled.div`
+export const SubmitContainer = styled.div`
   margin-top: 40px!important;
   width: 100%!important;
 
