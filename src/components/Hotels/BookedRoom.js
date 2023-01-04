@@ -45,7 +45,7 @@ const Container = styled.div`
   flex-direction: column;
   padding: 14px;
   cursor: pointer;
-  margin-bottom:38px;
+  margin-top: 20px;
 `;
 
 const Image = styled.div`
@@ -65,7 +65,7 @@ const Name = styled.div`
   color: #343434;
   align-items: center;
 `;
-const H1 = styled.h1`
+export const H1 = styled.h1`
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 700;
@@ -74,7 +74,7 @@ const H1 = styled.h1`
   color: #3C3C3C;
   margin-top:12px;
 `;
-const H2= styled.h2`
+export const H2= styled.h2`
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 400;
