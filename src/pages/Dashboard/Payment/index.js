@@ -15,16 +15,23 @@ export default function Payment() {
   const [userEnrollment, setUserEnrollment] = useState({});
 
   const [render, setRender] = useState(false);
-
-  useEffect(() => {
-    if ( enrollment ) {
-      setUserEnrollment(enrollment);
-    }
-    if (ticket) {
-      setUserTicket(ticket);
-    } 
-    console.log(userEnrollment, userTicket);
-  }, [render, ticket, enrollment]);
+  const ticketTest ={
+    id: 1,
+    status: 'RESERVED',
+    ticketTypeId: 1,
+    enrollmentId: 1,
+    TicketType: {
+      id: 1,
+      name: 'Online',
+      price: 200,
+      isRemote: true,
+      includesHotel: false,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    },
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  };
 
   return (
     <>

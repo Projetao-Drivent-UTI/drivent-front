@@ -14,10 +14,6 @@ export default function PaymentInfo( { userTicket, render, setRender } ) {
     try {
       if (Object.keys(formData).length !== 0) {
         console.log(formData, 'form');
-        usePaymentProcess({
-          ticketId: userTicket.id,
-          cardData: formData
-        });
       };
     } catch (error) {
       console.log(error);
@@ -33,7 +29,7 @@ export default function PaymentInfo( { userTicket, render, setRender } ) {
           <StyledTypography variant='subtitle1' color='textSecondary'>Pagamento</StyledTypography>
           {
             userTicket.status === 'RESERVED'?
-              <CardBox ticketId = {userTicket.id} formData={formData} setFormData={setFormData} setRender={setRender} render={render}/>:
+              <CardBox ticketId = {userTicket.id} ticket = {userTicket} formData={formData} setFormData={setFormData} setRender={setRender} render={render}/>:
               <PaymentConfirmed />
           }
         </>

@@ -8,7 +8,16 @@ import usePaymentProcess  from '../../hooks/api/usePayment';
 
 import Typography from '@material-ui/core/Typography';
 
-export default function CardBox({ formData, setFormData }) {  
+export default function CardBox({ formData, setFormData, ticket }) {  
+  const sendPaymentInfo = async values => {
+    console.log(values);
+    const res = await usePaymentProcess({
+      ticketId: ticket.id,
+      cardData: values
+    });
+    const data = await res.json();
+    return data;
+  };
   class PaymentForm extends React.Component {
     state = {
       cvc: '',
@@ -16,8 +25,7 @@ export default function CardBox({ formData, setFormData }) {
       focus: '',
       issuer: '',
       name: '',
-      number: '',
-      setForm: false
+      number: ''
     };
   
     handleInputFocus = (e) => {
@@ -41,22 +49,9 @@ export default function CardBox({ formData, setFormData }) {
         this.setState({ issuer });
       }
     };
-
-    handleSubmit = e => {
-      e.preventDefault();
-      setFormData( {
-        cvc: this.state.cvc,
-        expiry: this.state.expiry,
-        issuer: this.state.issuer,
-        name: this.state.name,
-        number: this.state.number
-      });
-      this.form.reset();
-    };
   
     render() {
       const { name, number, expiry, cvc, issuer, formData, setForm } = this.state;
-      console.log(issuer);
       return (
         <AppPayment>
           <Card
@@ -67,7 +62,7 @@ export default function CardBox({ formData, setFormData }) {
             number={this.state.number}
             callback={this.handleCallback}
           />
-          <form ref={c => (this.form = c)}  onSubmit={this.handleSubmit}>
+          <form>
             <CardForm>
               <FormGroup>
                 <input
@@ -122,7 +117,10 @@ export default function CardBox({ formData, setFormData }) {
             </CardForm>
             <input type='hidden' name='issuer' value={issuer} />
             <FormActions>
-              <button className='btn btn-primary btn-block'>FINALIZAR PAGAMENTO</button>
+              <button onClick={() => {
+                const { name, number, expiry, cvc, issuer, formData, setForm } = this.state;
+                sendPaymentInfo({ cvc, expiry, issuer, name, number });
+              }}>FINALIZAR PAGAMENTO</button>
             </FormActions>
           </form>
         </AppPayment>
