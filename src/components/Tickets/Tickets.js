@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -9,16 +9,27 @@ import CardBox from './CardBox';
 import CardHotels from './CardHotels';
 
 export default function tickets( { render, setRender } ) {
+  const { ticketTypes }  = useTicketTypes();
+  const { saveTicketLoading, saveTicket } = useSaveTicket();
+
   const [ticketTypeId, setTicketTypeId] = useState(0);
   const [total, setTotal] = useState(0);
   const [typeName, setTypeName] = useState('');
   const [hotelName, setHotelName] = useState('');
-  const { ticketTypes } = useTicketTypes();
-  const { saveTicketLoading, saveTicket } = useSaveTicket();
-  console.log(ticketTypes);
+  const [ticketTypesSet, setTicketTypes] = useState([]);
+
+  let ticketTypesModality = [];
+  let ticketTypesHotel = [];
+
+  useEffect(() => {
+    if (ticketTypes) {
+      setTicketTypes(ticketTypes);
+    };
+  }, [ticketTypes]);
+
   async function sendMessage() {
     const body = { ticketTypeId };
-
+    console.log(body);
     try {
       await saveTicket(body);
       toast('Informações salvas com sucesso!');
@@ -28,13 +39,34 @@ export default function tickets( { render, setRender } ) {
     }
   }
 
+  ticketTypesSet.map( (t) => {
+    let item = t;
+    const findModality = ticketTypesModality.find(i => i.isRemote === t.isRemote);
+
+    if(!findModality) {
+      ticketTypesModality.push(t);
+    } else if (findModality.price>t.price) {
+      ticketTypesModality = ticketTypesModality.filter(function(x) {
+        return x !== findModality;
+      });
+      ticketTypesModality.push(t);
+    };
+
+    if (!item.isRemote) {
+      ticketTypesHotel.push(item);
+    }
+  });
+
+  console.log(ticketTypesHotel, 'hotel');
+  console.log(ticketTypesModality, 'modality');
+
   return (
     <Container>
       <h1>Ingreso e Pagamento</h1>
       <h3>Primeiro, escolha sua modalidade de ingresso</h3>
       <TypesTicket>
-        {ticketTypes?.map((type) =>
-          type.name === 'Online' || type.name === 'Presencial' ? (
+        {ticketTypesModality?.map((type) =>
+          (
             <CardBox
               type={type}
               typeName={typeName}
@@ -42,9 +74,7 @@ export default function tickets( { render, setRender } ) {
               setTotal={setTotal}
               setTicketTypeId={setTicketTypeId}
             />
-          ) : (
-            ''
-          )
+          ) 
         )}
       </TypesTicket>
       {typeName === 'Online' ? (
@@ -63,19 +93,20 @@ export default function tickets( { render, setRender } ) {
         <>
           <PresentialText>Ótimo! Agora escolha sua modalidade de hospedagem</PresentialText>
           <TypesTicket>
-            {ticketTypes?.map((type) =>
-              type.name === 'Sem Hotel' || type.name === 'Com Hotel' ? (
+            {ticketTypesHotel?.map((type) => {
+              const presentialPrice = ticketTypesModality.find(i => i.isRemote === false);
+              console.log(presentialPrice, 'price pres');
+              return (
                 <CardHotels
                   type={type}
+                  presentialPrice = {presentialPrice.price}
                   hotelName={hotelName}
                   setHotelName={setHotelName}
                   total={total}
                   setTotal={setTotal}
                   setTicketTypeId={setTicketTypeId}
-                />
-              ) : (
-                ''
-              )
+                />);
+            } 
             )}
           </TypesTicket>
           <>

@@ -3,10 +3,17 @@ import { useState } from 'react';
 
 export default function CardBox({ type, typeName, setTypeName, setTotal, setTicketTypeId }) {
   const [isClicked, setIsClicked] = useState(false);
+  let ticketName = '';
+
+  if (type.isRemote) {
+    ticketName='Online';
+  } else{
+    ticketName='Presencial';
+  };
 
   function selectedOption(price, id) {
     setIsClicked(true);
-    setTypeName(type.name);
+    setTypeName(ticketName);
     setTotal(price);
     setTicketTypeId(id);
   }
@@ -16,10 +23,10 @@ export default function CardBox({ type, typeName, setTypeName, setTotal, setTick
       onClick={() => selectedOption(type.price, type.id)}
       typeName={typeName ? typeName : ''}
       isClicked={isClicked}
-      name={type.name}
+      name={ticketName}
       key={type.id}
     >
-      <h5>{type.name}</h5>
+      <h5>{ticketName}</h5>
       <h6>R$ {type.price}</h6>
     </CardButton>
   );

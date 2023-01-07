@@ -33,12 +33,23 @@ export default function Payment() {
     updatedAt: Date.now(),
   };
 
+  useEffect(() => {
+    if ( enrollment ) {
+      setUserEnrollment(enrollment);
+    }
+    if (ticket) {
+      setUserTicket(ticket);
+    } 
+  }, [render, ticket, enrollment]);
+  console.log(userEnrollment, 'enrollment');
+  console.log(userTicket, 'ticket');
+
   return (
     <>
       { (Object.keys(userEnrollment).length !== 0)?
         <> { (Object.keys(userTicket).length !== 0)?
           <PaymentInfo userTicket={userTicket} setRender={setRender} render={render}/>:
-          <Tickets setRender={setRender} render={render}/> 
+          <Tickets setRender={setRender} render={render} setUserTicket={setUserTicket}/> 
         } </>: 
         <NoEnrollment />
       }

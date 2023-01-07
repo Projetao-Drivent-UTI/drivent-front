@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 export default function CardBox({ formData, setFormData, ticket }) {  
   const sendPaymentInfo = async values => {
     console.log(values);
-    const res = await usePaymentProcess({
+    const res = usePaymentProcess({
       ticketId: ticket.id,
       cardData: values
     });
