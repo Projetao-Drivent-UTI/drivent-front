@@ -8,7 +8,7 @@ import useSaveTicket from '../../hooks/api/useSaveTicket';
 import CardBox from './CardBox';
 import CardHotels from './CardHotels';
 
-export default function tickets( { render, setRender } ) {
+export default function tickets( { render, setRender, setUserTicket } ) {
   const { ticketTypes }  = useTicketTypes();
   const { saveTicketLoading, saveTicket } = useSaveTicket();
 
@@ -31,9 +31,10 @@ export default function tickets( { render, setRender } ) {
     const body = { ticketTypeId };
     console.log(body);
     try {
-      await saveTicket(body);
+      const ticket = await saveTicket(body);
       toast('Informações salvas com sucesso!');
-      setRender(!render);
+      console.log(ticket, 'user ticket');
+      setUserTicket(ticket);
     } catch (error) {
       toast('Não foi possível salvar suas informações!');
     }
@@ -56,9 +57,6 @@ export default function tickets( { render, setRender } ) {
       ticketTypesHotel.push(item);
     }
   });
-
-  console.log(ticketTypesHotel, 'hotel');
-  console.log(ticketTypesModality, 'modality');
 
   return (
     <Container>
@@ -95,7 +93,6 @@ export default function tickets( { render, setRender } ) {
           <TypesTicket>
             {ticketTypesHotel?.map((type) => {
               const presentialPrice = ticketTypesModality.find(i => i.isRemote === false);
-              console.log(presentialPrice, 'price pres');
               return (
                 <CardHotels
                   type={type}
