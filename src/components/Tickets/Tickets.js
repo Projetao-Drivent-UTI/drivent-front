@@ -29,11 +29,9 @@ export default function tickets( { render, setRender, setUserTicket } ) {
 
   async function sendMessage() {
     const body = { ticketTypeId };
-    console.log(body);
     try {
       const ticket = await saveTicket(body);
       toast('Informações salvas com sucesso!');
-      console.log(ticket, 'user ticket');
       setUserTicket(ticket);
     } catch (error) {
       toast('Não foi possível salvar suas informações!');
