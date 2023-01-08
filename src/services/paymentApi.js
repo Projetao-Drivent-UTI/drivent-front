@@ -10,7 +10,7 @@ export async function getTicketPayment(token) {
   return response.data;
 }
 
-export async function paymentProcess(body, token) {
+export async function save(body, token) {
   const response = await api.post('/payments/process', body, {
     headers: {
       Authorization: `Bearer ${token}`,

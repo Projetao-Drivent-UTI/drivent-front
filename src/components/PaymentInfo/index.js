@@ -5,20 +5,34 @@ import Typography from '@material-ui/core/Typography';
 import TicketBox from './TicketBox';
 import CardBox from './CardInformation';
 import PaymentConfirmed from './PaymentConfirmed';
+import { toast } from 'react-toastify';
 
-import  usePaymentProcess  from '../../hooks/api/usePaymentProcess';
+import useSavePaymentProcess from '../../hooks/api/useSavePaymentProcess';
 
 export default function PaymentInfo( { userTicket, render, setRender } ) {
-  const [formData, setFormData] = useState({});
-  useEffect(async() => {
-    try {
-      if (Object.keys(formData).length !== 0) {
-        console.log(formData, 'form');
+  const [body, setBody]= useState({});
+  const [paymentStatus, setPaymentStatus] = useState(userTicket.status);
+
+  const { savePaymentProcess, savePaymentProcessLoading } = useSavePaymentProcess();
+  
+  useEffect(() => {
+    console.log(body);
+    if (Object.keys(body).length !== 0 && userTicket.status === 'RESERVED') {
+      const payment = async() => {
+        await savePaymentProcess(body);
       };
-    } catch (error) {
-      console.log(error);
+      payment()
+        .then((response) => {
+          setRender(!render);
+          toast('Pagamento realizado com sucesso!');
+          setPaymentStatus('PAID');
+        })
+        .catch((error) => {
+          console.log(error);
+          toast('Não foi possível completar seu pagamento!');
+        });
     }
-  }, [formData]);
+  }, [body]);
   return (
     <>
       <StyledTypography variant="h6">Ingresso e pagamento</StyledTypography>
@@ -28,8 +42,8 @@ export default function PaymentInfo( { userTicket, render, setRender } ) {
           <TicketBox userTicket={userTicket}/>
           <StyledTypography variant='subtitle1' color='textSecondary'>Pagamento</StyledTypography>
           {
-            userTicket.status === 'RESERVED'?
-              <CardBox ticketId = {userTicket.id} ticket = {userTicket} formData={formData} setFormData={setFormData} setRender={setRender} render={render}/>:
+            paymentStatus === 'RESERVED'?
+              <CardBox ticket = {userTicket} body={body} setBody={setBody} />:
               <PaymentConfirmed />
           }
         </>

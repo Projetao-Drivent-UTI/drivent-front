@@ -11,6 +11,7 @@ import CardHotels from './CardHotels';
 export default function tickets( { render, setRender, setUserTicket } ) {
   const { ticketTypes }  = useTicketTypes();
   const { saveTicketLoading, saveTicket } = useSaveTicket();
+  console.log(saveTicket);
 
   const [ticketTypeId, setTicketTypeId] = useState(0);
   const [total, setTotal] = useState(0);

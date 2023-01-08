@@ -24,7 +24,6 @@ export default function Payment() {
       setUserTicket(userTicket);
     } 
   }, [render, userTicket, enrollment]);
-  console.log(userTicket, 'ticket');
 
   return (
     <>
