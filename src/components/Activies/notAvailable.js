@@ -2,11 +2,13 @@ import styled from 'styled-components';
 
 import Typography from '@material-ui/core/Typography';
 
-export default function NoEnrollment() {
+export default function NotAvailable( { userTicket } ) {
   return (
     <>
       <Box>
-        <StyledTypography variant='subtitle1' color='textSecondary'>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</StyledTypography>
+        <StyledTypography variant='subtitle1' color='textSecondary'>{ userTicket.status ==='RESERVED'?
+          'Você precisa ter confirmado pagamento antes de fazer a escolha de atividades'
+          :'Sua modalidade de ingresso não necessita escolher atividade. Você terá acesso a todas as atividades.'}</StyledTypography>
       </Box>
     </>
   );

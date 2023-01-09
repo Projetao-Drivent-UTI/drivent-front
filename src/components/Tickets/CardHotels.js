@@ -1,30 +1,13 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 
-export default function CardHotels({ type, hotelName, setHotelName, total, setTotal, setTicketTypeId }) {
+export default function CardHotels({ type, hotelName, setHotelName, total, setTotal, setTicketTypeId, presentialPrice }) {
   const [isClicked, setIsClicked] = useState(false);
 
   function selectedOption(price, id) {
-    const totalPrice = total;
-    if (type.name === 'Com Hotel') {
-      if (totalPrice === 600) {
-        setIsClicked(true);
-        setHotelName(type.name);
-
-        return;
-      }
-      console.log(totalPrice);
-    }
-    if (totalPrice === 600) {
-      setTotal(250);
-      setIsClicked(true);
-      setHotelName(type.name);
-
-      return;
-    }
     setIsClicked(true);
     setHotelName(type.name);
-    setTotal(totalPrice + price);
+    setTotal(price);
     setTicketTypeId(id);
   }
 
@@ -37,7 +20,7 @@ export default function CardHotels({ type, hotelName, setHotelName, total, setTo
       key={type.id}
     >
       <h5>{type.name}</h5>
-      <h6>+ R$ {type.price}</h6>
+      <h6>+ R$ {type.price-presentialPrice}</h6>
     </CardButton>
   );
 }

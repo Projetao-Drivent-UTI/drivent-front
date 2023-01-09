@@ -8,10 +8,10 @@ import useUserTicket from '../../../hooks/api/useTicket';
 import Tickets from '../../../components/Tickets/Tickets';
 
 export default function Payment() {
-  const { ticket } =  useUserTicket();
+  const { userTicket } =  useUserTicket();
   const { enrollment } = useEnrollment();
 
-  const [userTicket, setUserTicket] = useState({});
+  const [userTicketSet, setUserTicket] = useState({});
   const [userEnrollment, setUserEnrollment] = useState({});
 
   const [render, setRender] = useState(false);
@@ -20,18 +20,17 @@ export default function Payment() {
     if ( enrollment ) {
       setUserEnrollment(enrollment);
     }
-    if (ticket) {
-      setUserTicket(ticket);
+    if (userTicket) {
+      setUserTicket(userTicket);
     } 
-    console.log(userEnrollment, userTicket);
-  }, [render, ticket, enrollment]);
+  }, [render, userTicket, enrollment]);
 
   return (
     <>
       { (Object.keys(userEnrollment).length !== 0)?
-        <> { (Object.keys(userTicket).length !== 0)?
-          <PaymentInfo userTicket={userTicket} setRender={setRender} render={render}/>:
-          <Tickets setRender={setRender} render={render}/> 
+        <> { (Object.keys(userTicketSet).length !== 0)?
+          <PaymentInfo userTicket={userTicketSet} setRender={setRender} render={render}/>:
+          <Tickets setRender={setRender} render={render} setUserTicket={setUserTicket}/> 
         } </>: 
         <NoEnrollment />
       }
