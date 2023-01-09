@@ -68,7 +68,7 @@ export default function SignIn() {
         console.log('a', userData);
         setUserData(userData);
         toast('Login realizado com sucesso!');
-        //navigate('/dashboard');
+        navigate('/dashboard');
       } catch (err) {
         toast('Não foi possível fazer o login!');
       }
