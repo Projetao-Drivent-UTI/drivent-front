@@ -3,7 +3,7 @@ import useToken from '../useToken';
 
 import * as activiesApi from '../../services/activiesApi';
 
-export default function useActivies() {
+export default function useActivies(date) {
   const token = useToken();
   
   const {
@@ -11,7 +11,7 @@ export default function useActivies() {
     loading: activiesLoading,
     error: activiesError,
     act: getActivies
-  } = useAsync(() => activiesApi.getActivies(token));
+  } = useAsync(() => activiesApi.getActivies(token, date));
 
   return {
     activies,
